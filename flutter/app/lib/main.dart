@@ -41,7 +41,7 @@ const List<TemaItem> temas = <TemaItem>[
   ),
 ];
 
-// Armazena todos os filmes carregados
+
 List<FilmeItem> todosFilmes = [];
 
 Future<void> main() async {
@@ -62,9 +62,8 @@ Future<List<FilmeItem>> carregarFilmes() async {
       .toList(growable: false);
 }
 
-// Função para carregar mais filmes (simula paginação)
 Future<List<FilmeItem>> carregarMaisFilmes(int pagina, int porPagina) async {
-  // Simula um delay de rede
+  
   await Future.delayed(const Duration(milliseconds: 500));
   
   final inicio = pagina * porPagina;

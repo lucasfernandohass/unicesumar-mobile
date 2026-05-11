@@ -35,7 +35,6 @@ class FilmesListViewState extends State<FilmesListView> {
   }
 
   void _onScroll() {
-    // Quando chegar a 200px do final, carrega mais
     if (scrollController.position.pixels >=
         scrollController.position.maxScrollExtent - 200) {
       carregarMais();
