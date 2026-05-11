@@ -402,7 +402,7 @@ void secao23UsoDeImport() {
 // ============================
 void secao24NullSafety() {
   String observacao;
-  print('[24] Observacao inicial (nula): $observacao');
+  //print('[24] Observacao inicial (nula): $observacao');
 
   observacao = 'Entrega prevista para amanha';
   print('[24] Observacao atual: ${observacao.toUpperCase()}');

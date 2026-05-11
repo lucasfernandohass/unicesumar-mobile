@@ -41,10 +41,13 @@ const List<TemaItem> temas = <TemaItem>[
   ),
 ];
 
+// Armazena todos os filmes carregados
+List<FilmeItem> todosFilmes = [];
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final List<FilmeItem> filmes = await carregarFilmes();
-  runApp(MainApp(filmes: filmes));
+  todosFilmes = await carregarFilmes();
+  runApp(MainApp(filmes: todosFilmes));
 }
 
 Future<List<FilmeItem>> carregarFilmes() async {
@@ -57,6 +60,23 @@ Future<List<FilmeItem>> carregarFilmes() async {
       .cast<Map<String, dynamic>>()
       .map(FilmeItem.fromJson)
       .toList(growable: false);
+}
+
+// Função para carregar mais filmes (simula paginação)
+Future<List<FilmeItem>> carregarMaisFilmes(int pagina, int porPagina) async {
+  // Simula um delay de rede
+  await Future.delayed(const Duration(milliseconds: 500));
+  
+  final inicio = pagina * porPagina;
+  final fim = (inicio + porPagina > todosFilmes.length)
+      ? todosFilmes.length
+      : inicio + porPagina;
+  
+  if (inicio >= todosFilmes.length) {
+    return [];
+  }
+  
+  return todosFilmes.sublist(inicio, fim);
 }
 
 class MainApp extends StatelessWidget {
