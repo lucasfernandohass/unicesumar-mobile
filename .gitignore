@@ -48,3 +48,4 @@ app.*.map.json
 *.keystore
 *.p12
 *.mobileprovision
+*.env
