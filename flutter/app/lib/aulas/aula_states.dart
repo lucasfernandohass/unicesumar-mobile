@@ -83,7 +83,7 @@ class _PainelLocalStateState extends State<PainelLocalState> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
-      color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.35),
+      color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.35),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -126,7 +126,7 @@ class PainelAppState extends ConsumerWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
-      color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.35),
+      color: Theme.of(context).colorScheme.secondaryContainer.withValues(alpha: 0.35),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
