@@ -8,7 +8,6 @@ import 'package:movies/providers.dart';
 import 'package:movies/router/app_routes.dart';
 import 'package:movies/utils/utils.dart';
 import 'package:movies/ui/movie_viewmodel.dart';
-import 'package:movies/ui/theme/theme.dart';
 import 'package:movies/ui/widgets/not_ready.dart';
 import 'package:movies/ui/widgets/vert_favorite_list.dart';
 import 'package:movies/ui/screens/genres/sort_picker.dart';
@@ -51,7 +50,7 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
           }
           return Scaffold(
             body: Container(
-              color: screenBackground,
+              color: Theme.of(context).scaffoldBackgroundColor,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -75,6 +74,7 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                         ),
                         SortPicker(
                             useSliver: true,
+                            initialSelectedSort: selectedSort,
                             onSortSelected: (sorting) {
                               selectedSort = sorting;
                               sortMovies();
@@ -126,7 +126,7 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
   }
 
   Future removeFavorite(DBFavorite favorite) async {
-    await movieViewModel.removeFavorite(favorite.id);
+    await movieViewModel.removeFavorite(favorite.movieId);
     setState(() {});
   }
 }

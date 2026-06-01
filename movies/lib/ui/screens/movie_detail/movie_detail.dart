@@ -11,7 +11,6 @@ import 'package:movies/data/models/movie_videos.dart';
 import 'package:movies/providers.dart';
 import 'package:movies/router/app_routes.dart';
 import 'package:movies/ui/movie_viewmodel.dart';
-import 'package:movies/ui/theme/theme.dart';
 import 'package:movies/ui/widgets/horiz_cast.dart';
 import 'package:movies/ui/widgets/not_ready.dart';
 import 'package:movies/ui/screens/movie_detail/button_row.dart';
@@ -80,19 +79,30 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
           return SafeArea(
             child: Scaffold(
               appBar: AppBar(
-                backgroundColor: screenBackground,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 leading: BackButton(
-                  color: Colors.white,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
                   onPressed: () {
                     context.router.maybePopTop();
                   },
                 ),
                 centerTitle: false,
-                title: Text('Back',
-                    style: Theme.of(context).textTheme.headlineMedium),
+                title: Text(
+                  'Back',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineMedium
+                      ?.copyWith(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                      ),
+                ),
               ),
               body: Container(
-                color: screenBackground,
+                color: Theme.of(context).scaffoldBackgroundColor,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [

@@ -56,19 +56,45 @@ class MovieViewModel {
   }
 
   Future saveFavorite(MovieDetails movieDetails) async {
-    return;
+    try {
+      final dbFavorite = DBFavorite(
+        id: 0, // Will be auto-generated
+        movieId: movieDetails.id,
+        backdropPath: movieDetails.backdropPath,
+        posterPath: movieDetails.posterPath,
+        favorite: true,
+        popularity: movieDetails.popularity.toDouble(),
+        releaseDate: movieDetails.releaseDate,
+        title: movieDetails.title,
+        overview: movieDetails.overview,
+      );
+      await database.saveFavorite(dbFavorite);
+    } catch (e) {
+      logError('Failed to save favorite: $e');
+    }
   }
 
-  Future<bool> removeFavorite(int id) async {
-    return false;
+  Future<bool> removeFavorite(int movieId) async {
+    try {
+      final result = await database.removeFavorite(movieId);
+      return result;
+    } catch (e) {
+      logError('Failed to remove favorite: $e');
+      return false;
+    }
   }
 
   Future<List<DBFavorite>> getFavorites() async {
-    return const <DBFavorite>[];
+    try {
+      return await database.getFavorites();
+    } catch (e) {
+      logError('Failed to get favorites: $e');
+      return [];
+    }
   }
 
   Stream<List<DBFavorite>> streamFavorites() {
-    return Stream.value(const <DBFavorite>[]);
+    return database.streamFavorites();
   }
 
   Future<MovieResponse?> getTrendingMovies(int page) async {

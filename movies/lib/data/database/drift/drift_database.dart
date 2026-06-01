@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:movies/data/database/models/database_models.dart';
 import 'package:movies/data/database/database_interface.dart';
 import 'package:movies/data/database/drift/movie_database.dart';
@@ -9,11 +10,6 @@ class DriftDatabase implements IDatabase {
 
   @override
   Future deleteDatabase() async {}
-
-  @override
-  Future<List<DBFavorite>> getFavorites() async {
-    throw UnimplementedError('Exercicio: implementar favoritos com Drift');
-  }
 
   @override
   Future<List<DBMovieGenre>> getGenres() async {
@@ -56,13 +52,79 @@ class DriftDatabase implements IDatabase {
   }
 
   @override
-  Future<bool> removeFavorite(int id) async {
-    throw UnimplementedError('Exercicio: implementar favoritos com Drift');
+  Future<List<DBFavorite>> getFavorites() async {
+    final favorites = await movieDatabase.select(movieDatabase.driftFavorite).get();
+    final dbFavorites = <DBFavorite>[];
+    for (final favorite in favorites) {
+      dbFavorites.add(DBFavorite(
+        id: favorite.id,
+        movieId: favorite.movieId,
+        backdropPath: favorite.backdropPath,
+        posterPath: favorite.posterPath,
+        favorite: favorite.favorite,
+        popularity: favorite.popularity,
+        releaseDate: favorite.releaseDate,
+        title: favorite.title,
+        overview: favorite.overview,
+      ));
+    }
+    return dbFavorites;
+  }
+
+  @override
+  Future<bool> removeFavorite(int movieId) async {
+    try {
+      await (movieDatabase.delete(movieDatabase.driftFavorite)
+            ..where((tbl) => tbl.movieId.equals(movieId)))
+          .go();
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   @override
   Future saveFavorite(DBFavorite favorite) async {
-    throw UnimplementedError('Exercicio: implementar favoritos com Drift');
+    await movieDatabase.into(movieDatabase.driftFavorite).insert(
+          DriftFavoriteCompanion(
+            movieId: Value(favorite.movieId),
+            backdropPath: Value(favorite.backdropPath),
+            posterPath: Value(favorite.posterPath),
+            favorite: Value(favorite.favorite),
+            popularity: Value(favorite.popularity),
+            releaseDate: Value(favorite.releaseDate),
+            title: Value(favorite.title),
+            overview: Value(favorite.overview),
+          ),
+          onConflict: DoUpdate(
+            (old) => DriftFavoriteCompanion(
+              favorite: Value(favorite.favorite),
+            ),
+          ),
+        );
+  }
+
+  @override
+  Stream<List<DBFavorite>> streamFavorites() {
+    return (movieDatabase.select(movieDatabase.driftFavorite).watch()).map(
+      (favorites) {
+        final dbFavorites = <DBFavorite>[];
+        for (final favorite in favorites) {
+          dbFavorites.add(DBFavorite(
+            id: favorite.id,
+            movieId: favorite.movieId,
+            backdropPath: favorite.backdropPath,
+            posterPath: favorite.posterPath,
+            favorite: favorite.favorite,
+            popularity: favorite.popularity,
+            releaseDate: favorite.releaseDate,
+            title: favorite.title,
+            overview: favorite.overview,
+          ));
+        }
+        return dbFavorites;
+      },
+    );
   }
 
   @override
@@ -85,10 +147,5 @@ class DriftDatabase implements IDatabase {
               profileSizes: configuration.images.profileSizes.join(','),
               stillSizes: configuration.images.stillSizes.join(','),
             ));
-  }
-
-  @override
-  Stream<List<DBFavorite>> streamFavorites() {
-    throw UnimplementedError('Exercicio: implementar favoritos com Drift');
   }
 }

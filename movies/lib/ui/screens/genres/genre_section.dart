@@ -27,13 +27,8 @@ class GenreSection extends ConsumerStatefulWidget {
 }
 
 class _GenreSectionState extends ConsumerState<GenreSection> {
-  List<Widget> chips = [];
-
   @override
   Widget build(BuildContext context) {
-    if (chips.isEmpty) {
-      chips = getGenreChips();
-    }
     return SliverList(
         delegate: SliverChildListDelegate([
       ExpansionPanelList(
@@ -46,7 +41,7 @@ class _GenreSectionState extends ConsumerState<GenreSection> {
         children: [
           ExpansionPanel(
             isExpanded: widget.isExpanded,
-            backgroundColor: screenBackground,
+            backgroundColor: screenBackgroundColor(context),
             headerBuilder: (BuildContext context, bool isExpanded) {
               return Padding(
                 padding: const EdgeInsets.only(left: 16.0, top: 16),
@@ -66,7 +61,7 @@ class _GenreSectionState extends ConsumerState<GenreSection> {
                         // Center the text
                         child: Text(
                           totalSelected().toString(),
-                          style: verySmallText,
+                          style: Theme.of(context).textTheme.labelSmall,
                         ),
                       ),
                     )
@@ -79,14 +74,14 @@ class _GenreSectionState extends ConsumerState<GenreSection> {
               child: GridView.builder(
                 shrinkWrap: true,
                 padding: const EdgeInsets.all(0.0),
-                itemCount: chips.length,
+                itemCount: widget.genreStates.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     crossAxisSpacing: 0,
                     childAspectRatio: 2.2,
                     mainAxisSpacing: 0),
                 itemBuilder: (BuildContext context, int index) {
-                  return chips[index];
+                  return getGenreChips()[index];
                 },
               ),
             ),
@@ -100,8 +95,8 @@ class _GenreSectionState extends ConsumerState<GenreSection> {
     return widget.genreStates.mapIndexed((index, element) {
       final genre = widget.genreStates[index].genre;
       return FilterChip(
-        backgroundColor: searchBarBackground,
-        selectedColor: buttonGrey,
+        backgroundColor: searchBarBackgroundColor(context),
+        selectedColor: buttonGreyColor(context),
         label: Text(genre.name, style: Theme.of(context).textTheme.labelSmall),
         selected: widget.genreStates[index].isSelected,
         onSelected: (selected) {

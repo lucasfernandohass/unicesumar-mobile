@@ -63,6 +63,9 @@ class _ButtonRowState extends State<ButtonRow> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final iconColor = isDarkMode ? Colors.white : Colors.black;
+
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, top: 0, bottom: 32),
       child: Row(
@@ -89,9 +92,9 @@ class _ButtonRowState extends State<ButtonRow> with TickerProviderStateMixin {
                           color: _colorAnimation.value,
                         );
                       })
-                  : const Icon(
+                  : Icon(
                       Icons.favorite_border,
-                      color: Colors.white,
+                      color: iconColor,
                     ),
             ),
           ),
@@ -103,9 +106,9 @@ class _ButtonRowState extends State<ButtonRow> with TickerProviderStateMixin {
             ),
             icon: IconButton(
               onPressed: () {},
-              icon: const Icon(
+              icon: Icon(
                 Icons.thumb_up_alt_outlined,
-                color: Colors.white,
+                color: iconColor,
               ),
             ),
           ),
@@ -117,9 +120,9 @@ class _ButtonRowState extends State<ButtonRow> with TickerProviderStateMixin {
             ),
             icon: IconButton(
               onPressed: () {},
-              icon: const Icon(
+              icon: Icon(
                 Icons.ios_share,
-                color: Colors.white,
+                color: iconColor,
               ),
             ),
           ),

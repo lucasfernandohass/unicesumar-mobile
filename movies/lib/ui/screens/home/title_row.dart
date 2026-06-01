@@ -9,21 +9,23 @@ class TitleRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).textTheme;
+
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16.0, 0.0, 8.0),
-          child: Text(text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
+          child: Text(text, style: theme.titleLarge),
         ),
         const Spacer(),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16.0, 8.0, 0.0),
           child: TextButton(
             onPressed: onMoreClicked,
-            child: const Text(
+            child: Text(
               'More',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
+              style: theme.bodyMedium,
             ),
           ),
         ),

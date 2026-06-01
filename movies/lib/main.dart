@@ -30,11 +30,12 @@ class _MainAppState extends ConsumerState<MainApp> {
   @override
   Widget build(BuildContext context) {
     final router = ref.watch(appRouterProvider);
+    final isDarkMode = ref.watch(themeNotifierProvider);
     return MaterialApp.router(
       routerConfig: router.config(),
       title: 'Movies',
       debugShowCheckedModeBanner: false,
-      theme: createTheme(),
+      theme: createTheme(isDarkMode: isDarkMode),
     );
 
   }

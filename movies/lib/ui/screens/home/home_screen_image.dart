@@ -68,13 +68,19 @@ class HomeScreenImage extends ConsumerWidget {
                       children: [
                         Text(
                           movieViewModel.nowPlayingMovies[index].title,
-                          style: Theme.of(context).textTheme.headlineLarge,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineLarge
+                              ?.copyWith(color: Colors.white),
                         ),
                         addVerticalSpace(4),
                         currentMovie.releaseDate != null
                             ? Text(
                                 yearFormat.format(currentMovie.releaseDate!),
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(color: Colors.white),
                               )
                             : Container(),
                         addVerticalSpace(4),
@@ -83,7 +89,10 @@ class HomeScreenImage extends ConsumerWidget {
                               const EdgeInsets.only(bottom: 8.0, right: 8.0),
                           child: AutoSizeText(
                             movieViewModel.nowPlayingMovies[index].overview,
-                            style: Theme.of(context).textTheme.bodyMedium,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: Colors.white),
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           ),

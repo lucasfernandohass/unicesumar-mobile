@@ -5,6 +5,7 @@ class Prefs {
 
   Prefs(this.preferences);
 
+  // Generic methods
   void setString(String key, String value) {
     preferences.setString(key, value);
   }
@@ -35,5 +36,38 @@ class Prefs {
 
   double? getDouble(String key) {
     return preferences.getDouble(key);
+  }
+
+  // Genre Screen Preferences
+  void setGenreSearchTerm(String searchTerm) {
+    setString('genreSearchTerm', searchTerm);
+  }
+
+  String getGenreSearchTerm() {
+    return getString('genreSearchTerm') ?? '';
+  }
+
+  void setGenreSortOrder(int sortOrderIndex) {
+    setInt('genreSortOrder', sortOrderIndex);
+  }
+
+  int getGenreSortOrder() {
+    return getInt('genreSortOrder') ?? 0;
+  }
+
+  void setGenreSelectedIds(List<int> genreIds) {
+    setString('genreSelectedIds', genreIds.join(','));
+  }
+
+  List<int> getGenreSelectedIds() {
+    final selectedGenres = getString('genreSelectedIds');
+    if (selectedGenres == null || selectedGenres.isEmpty) {
+      return <int>[];
+    }
+    return selectedGenres
+        .split(',')
+        .where((element) => element.isNotEmpty)
+        .map(int.parse)
+        .toList();
   }
 }

@@ -10,11 +10,11 @@ import 'package:movies/ui/movie_viewmodel.dart';
 import 'package:movies/ui/screens/genres/genre_search_row.dart';
 import 'package:movies/ui/screens/genres/genre_section.dart';
 import 'package:movies/ui/screens/genres/sort_picker.dart';
-import 'package:movies/ui/theme/theme.dart';
 import 'package:movies/ui/widgets/not_ready.dart';
 import 'package:movies/ui/widgets/sliver_divider.dart';
 import 'package:movies/ui/widgets/vert_movie_list.dart';
 import 'package:movies/utils/utils.dart';
+import 'package:movies/utils/prefs.dart';
 
 @RoutePage(name: 'GenreRoute')
 class GenreScreen extends ConsumerStatefulWidget {
@@ -33,6 +33,42 @@ class _GenreScreenState extends ConsumerState<GenreScreen> {
   final expandedNotifier = ValueNotifier<bool>(false);
   MovieResponse? currentMovieResponse;
   Sorting selectedSort = Sorting.aToz;
+  Prefs? prefsInstance;
+  List<int> restoredGenreIds = [];
+  bool preferencesRestored = false;
+  bool initialSearchScheduled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Restore preferences after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _restorePreferences();
+    });
+  }
+
+  void _restorePreferences() async {
+    final prefs = await ref.read(prefsProvider.future);
+    final selectedGenres = prefs.getGenreSelectedIds();
+    setState(() {
+      prefsInstance = prefs;
+      currentSearchString = prefs.getGenreSearchTerm();
+      selectedSort = Sorting.values[prefs.getGenreSortOrder()];
+      restoredGenreIds = selectedGenres;
+      preferencesRestored = true;
+    });
+
+    if (genreStates.isNotEmpty && restoredGenreIds.isNotEmpty) {
+      setState(() {
+        genreStates = genreStates
+            .map((state) => GenreState(
+                  genre: state.genre,
+                  isSelected: restoredGenreIds.contains(state.genre.id),
+                ))
+            .toList();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,16 +85,30 @@ class _GenreScreenState extends ConsumerState<GenreScreen> {
   }
 
   void buildGenreState() {
-    genreStates.clear();
-    for (final genre in movieViewModel.movieGenres!) {
-      genreStates.add(GenreState(genre: genre, isSelected: false));
+    if (genreStates.isEmpty) {
+      final selectedIds = restoredGenreIds.toSet();
+      genreStates = movieViewModel.movieGenres!
+          .map((genre) => GenreState(
+                genre: genre,
+                isSelected: selectedIds.contains(genre.id),
+              ))
+          .toList();
     }
   }
 
   Widget buildScreen() {
+    if (preferencesRestored && !initialSearchScheduled &&
+        (currentSearchString.isNotEmpty ||
+            genreStates.any((genreState) => genreState.isSelected))) {
+      initialSearchScheduled = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        search();
+      });
+    }
+
     return SafeArea(
       child: Container(
-        color: screenBackground,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -76,13 +126,19 @@ class _GenreScreenState extends ConsumerState<GenreScreen> {
                           child: Text('Find a Movie',
                               style: Theme.of(context).textTheme.titleLarge),
                         ),
-                        GenreSearchRow((searchString) {
-                          currentSearchString = searchString;
-                          currentMovieResponse = null;
-                          FocusScope.of(context).unfocus();
-                          expandedNotifier.value = false;
-                          search();
-                        }),
+                        GenreSearchRow(
+                          (searchString) {
+                            currentSearchString = searchString;
+                            if (prefsInstance != null) {
+                              prefsInstance!.setGenreSearchTerm(searchString);
+                            }
+                            currentMovieResponse = null;
+                            FocusScope.of(context).unfocus();
+                            expandedNotifier.value = false;
+                            search();
+                          },
+                          initialValue: currentSearchString,
+                        ),
                       ],
                     ),
                   ),
@@ -98,14 +154,22 @@ class _GenreScreenState extends ConsumerState<GenreScreen> {
                             },
                             onGenresSelected: (genres) {
                               genreStates = genres;
+                              if (prefsInstance != null) {
+                                prefsInstance!
+                                    .setGenreSelectedIds(genres.map((e) => e.genre.id).toList());
+                              }
                               currentMovieResponse = null;
                             });
                       }),
                   const SliverDivider(),
                   SortPicker(
                       useSliver: true,
+                      initialSelectedSort: selectedSort,
                       onSortSelected: (sorting) {
                         selectedSort = sorting;
+                        if (prefsInstance != null) {
+                          prefsInstance!.setGenreSortOrder(sorting.index);
+                        }
                         sortMovies();
                       }),
                   ValueListenableBuilder<List<MovieResults>>(

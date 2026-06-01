@@ -7,8 +7,10 @@ typedef OnSearch = void Function(String searchString);
 
 class GenreSearchRow extends ConsumerStatefulWidget {
   final OnSearch onSearch;
+  final String initialValue;
 
-  const GenreSearchRow(this.onSearch, {super.key});
+  const GenreSearchRow(this.onSearch,
+      {this.initialValue = '', super.key});
 
   @override
   ConsumerState<GenreSearchRow> createState() => _GenreSearchRowState();
@@ -21,7 +23,15 @@ class _GenreSearchRowState extends ConsumerState<GenreSearchRow> {
   @override
   void initState() {
     super.initState();
-    movieTextController = TextEditingController(text: '');
+    movieTextController = TextEditingController(text: widget.initialValue);
+  }
+
+  @override
+  void didUpdateWidget(covariant GenreSearchRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialValue != widget.initialValue) {
+      movieTextController.text = widget.initialValue;
+    }
   }
 
   @override
@@ -37,7 +47,7 @@ class _GenreSearchRowState extends ConsumerState<GenreSearchRow> {
         child: Padding(
           padding: const EdgeInsets.only(left: 16.0, right: 16.0),
           child: TextField(
-            style: const TextStyle(color: Colors.white),
+            style: Theme.of(context).textTheme.bodyLarge,
             focusNode: textFocusNode,
             keyboardType: TextInputType.text,
             enableSuggestions: false,
@@ -49,16 +59,19 @@ class _GenreSearchRowState extends ConsumerState<GenreSearchRow> {
             autocorrect: false,
             decoration: InputDecoration(
               filled: true,
-              focusColor: searchBarBackground,
+              focusColor: searchBarBackgroundColor(context),
               focusedBorder: null,
               enabledBorder: null,
-              fillColor: searchBarBackground,
+              fillColor: searchBarBackgroundColor(context),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
                 borderSide: BorderSide.none,
               ),
               hintText: 'movie name, genre',
-              hintStyle: body1Regular.copyWith(color: posterBorder),
+              hintStyle: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: posterBorderColor(context)),
               suffixIcon: IconButton(
                 onPressed: () {
                   movieTextController.clear();

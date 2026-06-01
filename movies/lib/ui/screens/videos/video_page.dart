@@ -6,7 +6,6 @@ import 'package:movies/data/models/movie_videos.dart';
 import 'package:pod_player/pod_player.dart';
 
 import 'package:movies/utils/utils.dart';
-import 'package:movies/ui/theme/theme.dart';
 
 @RoutePage(name: 'VideoPageRoute')
 class VideoPage extends ConsumerStatefulWidget {
@@ -42,7 +41,7 @@ class _VideoPageState extends ConsumerState<VideoPage> {
   Widget getVideoPlayer(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: screenBackground,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         leading: BackButton(
           color: Colors.white,
           onPressed: () {
@@ -55,7 +54,7 @@ class _VideoPageState extends ConsumerState<VideoPage> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        color: screenBackground,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,

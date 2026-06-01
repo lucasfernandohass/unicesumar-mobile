@@ -1,12 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// Colors
-const screenBackground = Color(0xFF111111);
-const searchBarBackground = Color(0xFF1E1E1E);
-const primaryButton = Color(0xFFD9D9D9);
-const posterBorder = Color(0xFFB5A9A9);
-const buttonGrey = Color(0xFF504F4F);
+// Dark Mode Colors
+const screenBackgroundDark = Color(0xFF111111);
+const searchBarBackgroundDark = Color(0xFF1E1E1E);
+const primaryButtonDark = Color(0xFFD9D9D9);
+const posterBorderDark = Color(0xFFB5A9A9);
+const buttonGreyDark = Color(0xFF504F4F);
+
+// Light Mode Colors
+const screenBackgroundLight = Color(0xFFFAFAFA);
+const searchBarBackgroundLight = Color(0xFFF0F0F0);
+const primaryButtonLight = Color(0xFF333333);
+const posterBorderLight = Color(0xFF999999);
+const buttonGreyLight = Color(0xFFCCCCCC);
+
+// Default (dark mode)
+const screenBackground = screenBackgroundDark;
+const searchBarBackground = searchBarBackgroundDark;
+const primaryButton = primaryButtonDark;
+const posterBorder = posterBorderDark;
+const buttonGrey = buttonGreyDark;
+
+Color screenBackgroundColor(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? screenBackgroundDark : screenBackgroundLight;
+Color searchBarBackgroundColor(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? searchBarBackgroundDark : searchBarBackgroundLight;
+Color primaryButtonColor(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? primaryButtonDark : primaryButtonLight;
+Color posterBorderColor(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? posterBorderDark : posterBorderLight;
+Color buttonGreyColor(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? buttonGreyDark : buttonGreyLight;
 
 var roboto = GoogleFonts.roboto();
 
@@ -66,46 +86,188 @@ var verySmallText = roboto.copyWith(
   color: Colors.white,
 );
 
-ThemeData createTheme() {
+ThemeData createTheme({bool isDarkMode = true}) {
+  if (isDarkMode) {
+    return _createDarkTheme();
+  } else {
+    return _createLightTheme();
+  }
+}
+
+ThemeData _createDarkTheme() {
+  var darkLargeTitle = roboto.copyWith(
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
+  );
+  var darkHeading1 = roboto.copyWith(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
+  );
+  var darkHeading2 = roboto.copyWith(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
+  );
+  var darkBody1Regular = roboto.copyWith(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: Colors.white,
+  );
+  var darkBody1Bold = roboto.copyWith(
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    color: Colors.white,
+  );
+  var darkBody2Regular = roboto.copyWith(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: Colors.white,
+  );
+  var darkBody2Bold = roboto.copyWith(
+    fontSize: 14,
+    fontWeight: FontWeight.w700,
+    color: Colors.white,
+  );
+  var darkCaption = roboto.copyWith(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: Colors.white,
+  );
+  var darkBody3Regular = roboto.copyWith(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: Colors.white,
+  );
+
   return ThemeData(
+    brightness: Brightness.dark,
+    scaffoldBackgroundColor: screenBackgroundDark,
     textTheme: Typography.material2021().englishLike.copyWith(
-          headlineLarge: heading1,
-          headlineMedium: heading2,
-          headlineSmall: body2Regular,
-          titleLarge: largeTitle,
-          titleMedium: heading2,
-          titleSmall: body2Bold,
-          bodyLarge: body1Regular,
-          bodyMedium: body2Regular,
-          bodySmall: body3Regular,
-          labelLarge: body1Bold,
-          labelMedium: body2Bold,
-          labelSmall: caption,
+          headlineLarge: darkHeading1,
+          headlineMedium: darkHeading2,
+          headlineSmall: darkBody2Regular,
+          titleLarge: darkLargeTitle,
+          titleMedium: darkHeading2,
+          titleSmall: darkBody2Bold,
+          bodyLarge: darkBody1Regular,
+          bodyMedium: darkBody2Regular,
+          bodySmall: darkBody3Regular,
+          labelLarge: darkBody1Bold,
+          labelMedium: darkBody2Bold,
+          labelSmall: darkCaption,
         ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.white, // App bar background color
-      foregroundColor: Colors.black, // Text/icon color on app bar
+      backgroundColor: screenBackgroundDark,
+      foregroundColor: Colors.white,
     ),
     navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: searchBarBackground,
+        backgroundColor: searchBarBackgroundDark,
         labelTextStyle: WidgetStateTextStyle.resolveWith((Set<WidgetState> states) {
-          // If the item is selected, use primary color; otherwise, use your desired unselected color
           if (states.contains(WidgetState.selected)) {
             return const TextStyle(color: Colors.white);
           }
-          return const TextStyle(color: posterBorder); // Unselected color
+          return const TextStyle(color: posterBorderDark);
         }),
         iconTheme: WidgetStateProperty.all<IconThemeData>(
             const IconThemeData(color: Colors.white)),
-        indicatorColor: posterBorder),
+        indicatorColor: posterBorderDark),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: searchBarBackground,
-      // Bottom nav background color
+      backgroundColor: searchBarBackgroundDark,
       selectedItemColor: Colors.white,
-      // Selected item color
+      unselectedLabelStyle: TextStyle(color: Colors.white),
+      showUnselectedLabels: true,
+      unselectedItemColor: posterBorderDark,
+    ),
+  );
+}
+
+ThemeData _createLightTheme() {
+  var lightLargeTitle = roboto.copyWith(
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    color: Colors.black,
+  );
+  var lightHeading1 = roboto.copyWith(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: Colors.black,
+  );
+  var lightHeading2 = roboto.copyWith(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: Colors.black,
+  );
+  var lightBody1Regular = roboto.copyWith(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: Colors.black,
+  );
+  var lightBody1Bold = roboto.copyWith(
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    color: Colors.black,
+  );
+  var lightBody2Regular = roboto.copyWith(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: Colors.black,
+  );
+  var lightBody2Bold = roboto.copyWith(
+    fontSize: 14,
+    fontWeight: FontWeight.w700,
+    color: Colors.black,
+  );
+  var lightCaption = roboto.copyWith(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: Colors.black,
+  );
+  var lightBody3Regular = roboto.copyWith(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: Colors.black,
+  );
+
+  return ThemeData(
+    brightness: Brightness.light,
+    scaffoldBackgroundColor: screenBackgroundLight,
+    textTheme: Typography.material2021().englishLike.copyWith(
+          headlineLarge: lightHeading1,
+          headlineMedium: lightHeading2,
+          headlineSmall: lightBody2Regular,
+          titleLarge: lightLargeTitle,
+          titleMedium: lightHeading2,
+          titleSmall: lightBody2Bold,
+          bodyLarge: lightBody1Regular,
+          bodyMedium: lightBody2Regular,
+          bodySmall: lightBody3Regular,
+          labelLarge: lightBody1Bold,
+          labelMedium: lightBody2Bold,
+          labelSmall: lightCaption,
+        ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: screenBackgroundLight,
+      foregroundColor: Colors.black,
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: searchBarBackgroundLight,
+        labelTextStyle: WidgetStateTextStyle.resolveWith((Set<WidgetState> states) {
+          if (states.contains(WidgetState.selected)) {
+            return const TextStyle(color: Colors.black);
+          }
+          return const TextStyle(color: posterBorderLight);
+        }),
+        iconTheme: WidgetStateProperty.all<IconThemeData>(
+            const IconThemeData(color: Colors.black)),
+        indicatorColor: posterBorderLight),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: searchBarBackgroundLight,
+      selectedItemColor: Colors.black,
       unselectedLabelStyle: TextStyle(color: Colors.black),
       showUnselectedLabels: true,
-      unselectedItemColor: posterBorder, // Unselected item color
+      unselectedItemColor: posterBorderLight,
     ),
   );
 }

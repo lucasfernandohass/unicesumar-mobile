@@ -1,24 +1,24 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:movies/providers.dart';
 import 'package:movies/router/app_routes.dart';
-import 'package:movies/ui/theme/theme.dart';
 
 @RoutePage()
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  ConsumerState<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
-      backgroundColor: screenBackground,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       routes: const [
         HomeRoute(),
         GenreRoute(),
@@ -29,18 +29,44 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget buildBottomBar(TabsRouter tabsRouter) {
-    return NavigationBar(
-      destinations: const [
-        NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-        NavigationDestination(icon: Icon(Symbols.genres), label: 'Genre'),
-        NavigationDestination(icon: Icon(Icons.favorite), label: 'Favorites'),
-      ],
-      selectedIndex: tabsRouter.activeIndex,
-      onDestinationSelected: (navIndex) {
-        setState(() {
-          tabsRouter.setActiveIndex(navIndex);
-        });
-      },
+    final isDarkMode = ref.watch(themeNotifierProvider);
+    final themeNotifier = ref.read(themeNotifierProvider.notifier);
+
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  icon: Icon(isDarkMode ? Icons.dark_mode : Icons.light_mode),
+                  onPressed: () {
+                    themeNotifier.toggleTheme();
+                  },
+                ),
+              ],
+            ),
+          ),
+          NavigationBar(
+            destinations: const [
+              NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+              NavigationDestination(icon: Icon(Icons.category), label: 'Genre'),
+              NavigationDestination(
+                  icon: Icon(Icons.favorite), label: 'Favorites'),
+            ],
+            selectedIndex: tabsRouter.activeIndex,
+            onDestinationSelected: (navIndex) {
+              setState(() {
+                tabsRouter.setActiveIndex(navIndex);
+              });
+            },
+          ),
+        ],
+      ),
     );
   }
 }

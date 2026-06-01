@@ -20,7 +20,7 @@ class CastImage extends StatelessWidget {
         SizedBox(
           width: 76,
           height: 78,
-          child: getAvatar(),
+          child: getAvatar(context),
         ),
         addVerticalSpace( 4),
         Align(
@@ -36,7 +36,7 @@ class CastImage extends StatelessWidget {
     );
   }
 
-  Widget getAvatar() {
+  Widget getAvatar(BuildContext context) {
     if (imageUrl.isNotEmpty) {
       return CircleAvatar(
           backgroundImage: CachedNetworkImageProvider(
@@ -45,9 +45,9 @@ class CastImage extends StatelessWidget {
             maxWidth: 76,
           ));
     } else {
-      return const CircleAvatar(
-          backgroundColor: buttonGrey,
-          child: Icon(Icons.person, size: 76.0, color: Colors.black,));
+      return CircleAvatar(
+          backgroundColor: buttonGreyColor(context),
+          child: const Icon(Icons.person, size: 76.0, color: Colors.black,));
     }
   }
 }
